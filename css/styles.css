@@ -115,6 +115,14 @@ h1 {
   font-style: normal;
 }
 
+.tags {
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+  text-align: center;
+  margin-right: 4em;
+}
+
 @media (min-width: 768px) {
   body {
     padding: 25px;
@@ -161,6 +169,10 @@ h1 {
   }
 
   .source {
+    font-size: 1.25rem;
+  }
+
+  .tags {
     font-size: 1.25rem;
   }
 }

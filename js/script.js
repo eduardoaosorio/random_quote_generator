@@ -30,22 +30,28 @@ const quotes = [
   },
   {
     quote: "It never ceases to amaze me: we all love ourselves more than other people, but care more about their opinion than our own.",
-    source: "Marcus Aurelius"
+    source: "Marcus Aurelius",
+    tags: ['stoicism', 'wisdom']
   },
   {
     quote: "We are more often frightened than hurt; and we suffer more in imagination than in reality",
-    source: "Seneca"
+    source: "Seneca",
+    tags: ['stoicism', 'wisdom']
   },
   {
     quote: "The happiness of your life depends upon the quality of your thoughts.",
-    source: "Marcus Aurelius"
+    source: "Marcus Aurelius",
+    tags: ['stoicism', 'wisdom']
   },
   {
     quote: "It's not what happens to you, but how you react to it that matters.",
-    source: "Epictetus"
+    source: "Epictetus",
+    tags: ['stoicism', 'wisdom']
   }
 ];
 
+// variable to represent seconds left until new random quote will be fetched
+let countdown = 10;
 
 /**
  * Returns a random quote from the quotes array.
@@ -56,7 +62,6 @@ function getRandomQuote() {
   return quotes[randNum];
 }
 
-
 /**
  * Prints a random quote in the screen.
  */
@@ -66,8 +71,59 @@ function printQuote() {
   if (quote.citation) htmlString += `<span class="citation"> ${quote.citation} </span>`;
   if (quote.year) htmlString += `<span class="year"> ${quote.year} </span>`;
   htmlString += `</p>`;
+  if (quote.tags) htmlString += `<p class="tags"> &#35;${quote.tags.join('&#35')} </p>`; // extra code to display tags, if any
+  htmlString += `<p id="timer">random quote in: ${countdown}</p>`; // extra code to display a countdown for next random quote
   document.getElementById('quote-box').innerHTML = htmlString;
 }
 
-// Click event listener for the print quote button
-document.getElementById('load-quote').addEventListener("click", printQuote, false);
+/**
+ * Returns a random color in rgb format.
+ * @return {string} A randomly generated color.
+ */
+function generateRandomColor() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+/**
+ * Changes backgrounds color to a randomly selected color.
+ */
+function changeBackgroundColor() {
+  document.body.style.backgroundColor = generateRandomColor();
+}
+
+// Click event listener to fetch new random quote, change background color, and reset countdown and timer 
+document.getElementById('load-quote').addEventListener("click", () => {
+  clearInterval(countdownDisplayID);
+  clearInterval(backgroundChangeID);
+  printQuote();
+  changeBackgroundColor();
+  countdown = 10;
+  document.querySelector('#timer').innerHTML = `random quote in: ${countdown}`;
+
+  backgroundChangeID = setInterval(() => {
+    printQuote();
+    changeBackgroundColor();
+    countdown = 11;
+  }, 10000);
+  
+  countdownDisplayID = setInterval(() => {
+    countdown -= 1;
+    document.querySelector('#timer').innerHTML = `random quote in: ${countdown}`;
+  }, 1000)
+})
+
+/* The code below starts the countdown and timer to generate a random quote and change the background color after 10 seconds
+the first time the page is loaded*/
+let backgroundChangeID = setInterval(() => {
+  printQuote();
+  changeBackgroundColor();
+  countdown = 11;
+}, 10000);
+
+let countdownDisplayID = setInterval(() => {
+  countdown -= 1;
+  document.querySelector('#timer').innerHTML = `random quote in: ${countdown}`;
+}, 1000)
