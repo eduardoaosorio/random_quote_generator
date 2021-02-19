@@ -50,12 +50,16 @@ const quotes = [
   }
 ];
 
-// variable to represent seconds left until new random quote will be fetched
+// Variable to represent seconds left until new random quote will be fetched
 let countdown = 10;
 
+// These variables will be assigned an ID to use in clearInterval() later on to reset the timer and displayed countdown
+let backgroundChangeID = null;
+let countdownDisplayID = null;
+
 /**
- * Returns a random quote from the quotes array.
- * @return {object} A randomly selected quote object from the quotes array.
+ * Returns a random quote from the quotes array
+ * @return {object} A randomly selected quote object from the quotes array
  */
 function getRandomQuote() {
   const randNum = Math.floor(Math.random() * (quotes.length));
@@ -63,7 +67,7 @@ function getRandomQuote() {
 }
 
 /**
- * Prints a random quote in the screen.
+ * Prints a random quote in the screen
  */
 function printQuote() {
   let quote = getRandomQuote();
@@ -77,8 +81,8 @@ function printQuote() {
 }
 
 /**
- * Returns a random color in rgb format.
- * @return {string} A randomly generated color.
+ * Returns a random color in rgb format
+ * @return {string} A randomly generated color
  */
 function generateRandomColor() {
   const r = Math.floor(Math.random() * 256);
@@ -88,21 +92,16 @@ function generateRandomColor() {
 }
 
 /**
- * Changes backgrounds color to a randomly selected color.
+ * Changes backgrounds color to a randomly selected color
  */
 function changeBackgroundColor() {
   document.body.style.backgroundColor = generateRandomColor();
 }
 
-// Click event listener to fetch new random quote, change background color, and reset countdown and timer 
-document.getElementById('load-quote').addEventListener("click", () => {
-  clearInterval(countdownDisplayID);
-  clearInterval(backgroundChangeID);
-  printQuote();
-  changeBackgroundColor();
-  countdown = 10;
-  document.querySelector('#timer').innerHTML = `random quote in: ${countdown}`;
-
+/**
+ * Starts the countdown and timer to generate a random quote and change the background color after 10 seconds
+ */
+function manageTime() {
   backgroundChangeID = setInterval(() => {
     printQuote();
     changeBackgroundColor();
@@ -113,17 +112,19 @@ document.getElementById('load-quote').addEventListener("click", () => {
     countdown -= 1;
     document.querySelector('#timer').innerHTML = `random quote in: ${countdown}`;
   }, 1000)
-})
+}
 
-/* The code below starts the countdown and timer to generate a random quote and change the background color after 10 seconds
-the first time the page is loaded*/
-let backgroundChangeID = setInterval(() => {
+// Click event listener to fetch new random quote, change background color, and reset countdown and timer 
+document.getElementById('load-quote').addEventListener("click", () => {
+  // clearInterval is used to reset the timer and displayed countdown
+  clearInterval(countdownDisplayID);
+  clearInterval(backgroundChangeID);
   printQuote();
   changeBackgroundColor();
-  countdown = 11;
-}, 10000);
-
-let countdownDisplayID = setInterval(() => {
-  countdown -= 1;
+  countdown = 10;
   document.querySelector('#timer').innerHTML = `random quote in: ${countdown}`;
-}, 1000)
+  manageTime();
+})
+
+// Start countdown and timer the first time the page loads
+manageTime();
